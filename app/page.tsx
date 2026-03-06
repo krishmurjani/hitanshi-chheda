@@ -30,6 +30,7 @@ type TimelineItem = {
   bottom?: React.ReactNode;
   topTag?: string;
   bottomTag?: string;
+  experienceId?: ExperienceId;
 };
 
 const timelineSteps: TimelineItem[] = [
@@ -64,6 +65,7 @@ const timelineSteps: TimelineItem[] = [
         finance coursework
       </>
     ),
+    experienceId: "gaurang",
   },
   {
     month: "Aug 2021",
@@ -84,6 +86,7 @@ const timelineSteps: TimelineItem[] = [
         placements
       </>
     ),
+    experienceId: "7mm",
   },
   {
     month: "May 2022",
@@ -106,6 +109,7 @@ const timelineSteps: TimelineItem[] = [
         <span className="italic">closed my first deal ($1 Mn)</span>
       </>
     ),
+    experienceId: "popmunch",
   },
   {
     month: "May 2023",
@@ -143,6 +147,7 @@ const timelineSteps: TimelineItem[] = [
         Strategic
       </>
     ),
+    experienceId: "tristone",
   },
   {
     month: "August 2025",
@@ -160,6 +165,7 @@ const timelineSteps: TimelineItem[] = [
         and led governance
       </>
     ),
+    experienceId: "groww",
   },
 ];
 
@@ -285,7 +291,7 @@ const experienceDetails: Record<
 function ColumnHeaders() {
   const cols = "ABCDEFGH".split("");
   return (
-    <div className="grid grid-cols-[46px_repeat(8,minmax(0,1fr))] border-b border-slate-300 bg-slate-100 text-[11px] font-semibold text-slate-600">
+    <div className="hidden sm:grid grid-cols-[46px_repeat(8,minmax(0,1fr))] border-b border-slate-300 bg-slate-100 text-[11px] font-semibold text-slate-600">
       <div className="border-r border-slate-300 px-2 py-1.5" />
       {cols.map((col) => (
         <div key={col} className="border-r border-slate-300 px-2 py-1.5 text-center">
@@ -305,18 +311,19 @@ function ExcelSheet({ title, children }: { title: string; children: React.ReactN
       className="overflow-hidden rounded-xl border border-slate-300 bg-white shadow-[0_8px_24px_rgba(15,23,42,0.08)]"
     >
       <div className="flex items-center gap-2 border-b border-slate-300 bg-slate-50 px-3 py-2">
-        <span className="h-3 w-3 rounded-full bg-rose-400" />
-        <span className="h-3 w-3 rounded-full bg-amber-400" />
-        <span className="h-3 w-3 rounded-full bg-emerald-400" />
-        <Divider orientation="vertical" className="mx-1 h-4 bg-slate-300" />
+        <span className="h-3 w-3 rounded-full bg-rose-400 hidden sm:block" />
+        <span className="h-3 w-3 rounded-full bg-amber-400 hidden sm:block" />
+        <span className="h-3 w-3 rounded-full bg-emerald-400 hidden sm:block" />
+        <Divider orientation="vertical" className="mx-1 h-4 bg-slate-300 hidden sm:block" />
         <span className="font-mono text-xs text-slate-500">fx</span>
         <div className="rounded border border-slate-300 bg-white px-2 py-1 font-mono text-xs text-slate-600">
           {title}
         </div>
       </div>
       <ColumnHeaders />
-      <div className="grid grid-cols-[46px_1fr]">
-        <div className="border-r border-slate-300 bg-slate-50">
+      <div className="grid grid-cols-1 sm:grid-cols-[46px_1fr]">
+        {/* Row numbers — desktop only */}
+        <div className="hidden sm:block border-r border-slate-300 bg-slate-50">
           {Array.from({ length: 16 }).map((_, i) => (
             <div
               key={i}
@@ -334,6 +341,79 @@ function ExcelSheet({ title, children }: { title: string; children: React.ReactN
   );
 }
 
+/* ── Mobile-only vertical timeline ── */
+function MobileTimeline({
+  steps,
+  onOpen,
+}: {
+  steps: TimelineItem[];
+  onOpen: (id: ExperienceId) => void;
+}) {
+  return (
+    <div className="relative pl-10">
+      {/* Vertical line */}
+      <div className="absolute left-[18px] top-2 bottom-2 w-px bg-blue-300" />
+
+      {steps.map((step, idx) => {
+        const content = step.top || step.bottom;
+        const tag = step.topTag || step.bottomTag;
+        const expId = step.experienceId;
+        const isClickable = !!expId;
+
+        return (
+          <div key={`m-${step.month}-${idx}`} className="relative mb-6 last:mb-0">
+            {/* Icon bubble */}
+            <div className="absolute -left-10 flex h-9 w-9 items-center justify-center rounded-full border border-[#cdd6e6] bg-[#d8dfec]">
+              <div className="scale-[0.55]">
+                <TimelineIcon kind={step.icon} />
+              </div>
+            </div>
+
+            {/* Card */}
+            <div
+              className={`rounded-lg border bg-white p-3 ${
+                isClickable
+                  ? "cursor-pointer border-slate-300 transition hover:border-blue-400 hover:bg-blue-50 active:bg-blue-100"
+                  : "border-slate-200"
+              }`}
+              onClick={() => isClickable && onOpen(expId)}
+            >
+              <div className="flex items-center justify-between gap-2">
+                <span className="font-[family-name:var(--font-manrope)] text-xs font-semibold text-slate-500">
+                  {step.month}
+                </span>
+                {tag && (
+                  <span className="rounded bg-slate-900 px-2 py-0.5 text-[10px] text-white">
+                    {tag}
+                  </span>
+                )}
+              </div>
+
+              {step.role && (
+                <p className="mt-1 text-xs italic text-red-700 leading-tight">
+                  {step.role}
+                </p>
+              )}
+
+              {content && (
+                <p className="mt-1.5 text-xs text-slate-700 leading-snug">
+                  {content}
+                </p>
+              )}
+
+              {isClickable && (
+                <p className="mt-2 text-[10px] text-blue-600 font-medium">
+                  Tap to view details →
+                </p>
+              )}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 export default function Home() {
   const [active, setActive] = useState<SheetId>("profile");
   const [activeExperience, setActiveExperience] = useState<ExperienceId | null>(null);
@@ -346,20 +426,31 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-[linear-gradient(180deg,_#f1f5f9_0%,_#e2e8f0_100%)]">
+
+      {/* ── Top bar ── */}
       <div className="fixed inset-x-0 top-0 z-50 px-3 pt-3 sm:px-6 sm:pt-4">
         <div className="mx-auto w-full max-w-7xl overflow-hidden rounded-xl border border-slate-300 shadow-sm">
+
+          {/* Title bar */}
           <div className="flex h-11 items-center justify-between bg-[#1f7244] px-4 text-white">
-            <div className="text-sm font-semibold">File</div>
+            {/* Desktop: "File" label */}
+            <div className="hidden sm:block text-sm font-semibold">File</div>
+            {/* Mobile: empty left slot for balance */}
+            <div className="sm:hidden w-8" />
+
             <p className="font-[family-name:var(--font-manrope)] text-sm font-medium">
               Hitanshi Chheda Profile - Excel
             </p>
+
             <div className="flex items-center gap-2 text-sm">
+              {/* Email — desktop only */}
               <Link
                 href="mailto:Hitanshichheda6@gmail.com"
-                className="text-sm text-white underline underline-offset-2"
+                className="hidden sm:inline text-sm text-white underline underline-offset-2"
               >
                 hitanshichheda6@gmail.com
               </Link>
+              {/* LinkedIn — always visible */}
               <Link
                 href="https://linkedin.com/in/hitanshi-chheda/"
                 target="_blank"
@@ -376,7 +467,8 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="flex h-10 items-center gap-6 bg-[#2b804a] px-4 text-sm text-white">
+          {/* Ribbon menu row — desktop only */}
+          <div className="hidden sm:flex h-10 items-center gap-6 bg-[#2b804a] px-4 text-sm text-white">
             <span className="font-semibold">Home</span>
             <span>Insert</span>
             <span>Draw</span>
@@ -390,11 +482,13 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 px-3 pb-24 pt-30 sm:px-6 sm:pb-28 sm:pt-32">
+      {/* ── Main content ── */}
+      <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 px-3 pb-24 pt-20 sm:px-6 sm:pb-28 sm:pt-32">
+
         {active === "profile" && (
           <ExcelSheet title="Candidate Snapshot">
             <Card className="w-full border border-slate-300 bg-white/95 p-4">
-              <h1 className="font-[family-name:var(--font-space-grotesk)] text-3xl font-bold text-slate-900">
+              <h1 className="font-[family-name:var(--font-space-grotesk)] text-2xl sm:text-3xl font-bold text-slate-900">
                 Hitanshi Chheda
               </h1>
               <p className="mt-2 font-mono text-xs text-slate-600">
@@ -431,7 +525,19 @@ export default function Home() {
 
               <div className="mt-4 rounded-lg border border-slate-300 bg-slate-50 p-3">
                 <p className="font-mono text-[11px] uppercase tracking-[0.12em] text-slate-500">career timeline</p>
-                <div className="mt-3 rounded-xl border border-slate-300 bg-[#ececec] p-4">
+
+                {/* ── Mobile timeline (vertical) ── */}
+                <div className="mt-4 sm:hidden">
+                  <MobileTimeline
+                    steps={timelineSteps}
+                    onOpen={(id) => {
+                      setActiveExperience(id);
+                    }}
+                  />
+                </div>
+
+                {/* ── Desktop timeline (horizontal grid) ── */}
+                <div className="hidden sm:block mt-3 rounded-xl border border-slate-300 bg-[#ececec] p-4">
                   <div className="grid grid-cols-7 gap-4">
                     {timelineSteps.map((step, idx) => (
                       <div key={`top-${step.month}-${idx}`} className="flex h-full items-end justify-center">
@@ -449,7 +555,7 @@ export default function Home() {
                                         : "tristone"
                                   )
                                 }
-                                aria-label="Open Tristone Strategic Partners experience"
+                                aria-label="Open experience details"
                                 className="box relative cursor-pointer text-center text-slate-900 transition hover:border-blue-500 hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-400"
                                 style={
                                   step.topTag
@@ -641,6 +747,7 @@ export default function Home() {
                     ))}
                   </div>
                 </div>
+                {/* end desktop timeline */}
               </div>
             </Card>
           </ExcelSheet>
@@ -762,13 +869,14 @@ export default function Home() {
         )}
       </div>
 
+      {/* ── Bottom sheet tabs ── */}
       <div className="fixed inset-x-0 bottom-0 z-50 px-3 pb-3 sm:px-6 sm:pb-4">
         <div className="mx-auto flex w-full max-w-7xl items-end gap-1 rounded-b-xl border border-slate-300 bg-slate-200 p-2 shadow-sm">
           {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActive(tab.id)}
-              className={`min-w-28 rounded-t-md border px-3 py-2 text-sm font-medium transition ${
+              className={`flex-1 sm:flex-none sm:min-w-28 rounded-t-md border px-2 py-2 text-xs sm:text-sm font-medium transition ${
                 active === tab.id
                   ? "border-slate-300 border-b-white bg-white text-slate-900"
                   : "border-slate-300 bg-slate-100 text-slate-600 hover:bg-white"
@@ -777,12 +885,14 @@ export default function Home() {
               {tab.label}
             </button>
           ))}
-          <div className="ml-2 rounded border border-slate-300 bg-slate-100 px-2 py-1 font-mono text-xs text-slate-500">
+          {/* "sheet: X" label — desktop only */}
+          <div className="hidden sm:block ml-2 rounded border border-slate-300 bg-slate-100 px-2 py-1 font-mono text-xs text-slate-500">
             sheet: {activeLabel}
           </div>
         </div>
       </div>
 
+      {/* ── Experience detail modal ── */}
       <Modal
         isOpen={!!activeExperienceData}
         onOpenChange={(open) => {
@@ -814,6 +924,3 @@ export default function Home() {
     </div>
   );
 }
-
-
-
