@@ -492,7 +492,7 @@ export default function Home() {
                 Hitanshi Chheda
               </h1>
               <p className="mt-2 font-mono text-xs text-slate-600">
-                <span className="text-blue-700">Mumbai, India</span> | <span className="text-blue-700">+91 9820969628</span> |{" "}
+                <span className="text-blue-700">Mumbai, India</span> | <Link href="tel:+919820969628" className="font-mono text-xs text-blue-700">+91 9820969628</Link> |{" "}
                 <Link href="mailto:Hitanshichheda6@gmail.com" className="font-mono text-xs text-slate-600 underline">
                   hitanshichheda6@gmail.com
                 </Link>{" "}
