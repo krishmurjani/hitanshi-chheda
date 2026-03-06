@@ -45,7 +45,7 @@ export const metadata: Metadata = {
   title: "Hitanshi Chheda",
   description:
     "Hitanshi Chheda — Finance professional with experience in financial advisory and D2C startups.",
-  metadataBase: new URL("https://skill-deploy-u67u5cdo09.vercel.app"),
+  metadataBase: new URL("https://hitanshichheda.com"),
   openGraph: {
     title: "Hitanshi Chheda",
     description:
