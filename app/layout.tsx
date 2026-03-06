@@ -42,18 +42,21 @@ const instrumentSerif = Instrument_Serif({
 });
 
 export const metadata: Metadata = {
-  title: "makesomething ☀️",
-  description: "build your first app with ai. look what i made!",
-  metadataBase: new URL("https://makesomething.so"),
+  title: "Hitanshi Chheda",
+  description:
+    "Hitanshi Chheda — Finance professional with experience in financial advisory and D2C startups.",
+  metadataBase: new URL("https://skill-deploy-u67u5cdo09.vercel.app"),
   openGraph: {
-    title: "makesomething ☀️",
-    description: "look what i made!",
-    siteName: "makesomething",
+    title: "Hitanshi Chheda",
+    description:
+      "Finance professional with experience in financial advisory and D2C startups.",
+    siteName: "Hitanshi Chheda",
   },
   twitter: {
     card: "summary_large_image",
-    title: "makesomething ☀️",
-    description: "look what i made!",
+    title: "Hitanshi Chheda",
+    description:
+      "Finance professional with experience in financial advisory and D2C startups.",
   },
 };
 
